@@ -37,6 +37,7 @@
         <repository>
             <id>github</id>
             <name>GitHub TonyGuerra122 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/TonyGuerra122/notfis-parser</url>
         </repository>
     </distributionManagement>
 
