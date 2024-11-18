@@ -73,6 +73,6 @@ Este projeto está disponível como dependência Maven:
 <dependency>
   <groupId>io.github.tonyguerra122</groupId>
   <artifactId>notfis-parser</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
