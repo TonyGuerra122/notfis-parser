@@ -1,11 +1,12 @@
-package io.github.tonyguerra122.notfisparser;
+package com.tonyguerra.notfisparser;
 
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import io.github.tonyguerra122.notfisgenerator.NotfisLine;
+import com.tonyguerra.notfisgenerator.NotfisLine;
+
 
 public final class NotfisUtils {
     public static JSONObject notfisLinesToJson(List<NotfisLine> lines) {

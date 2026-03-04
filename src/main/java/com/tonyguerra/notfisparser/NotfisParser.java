@@ -1,7 +1,6 @@
-package io.github.tonyguerra122.notfisparser;
+package com.tonyguerra.notfisparser;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,10 +14,11 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import io.github.tonyguerra122.notfisgenerator.NotfisField;
-import io.github.tonyguerra122.notfisgenerator.NotfisFieldType;
-import io.github.tonyguerra122.notfisgenerator.NotfisLine;
-import io.github.tonyguerra122.notfisgenerator.NotfisType;
+import com.tonyguerra.notfisgenerator.NotfisField;
+import com.tonyguerra.notfisgenerator.NotfisFieldType;
+import com.tonyguerra.notfisgenerator.NotfisLine;
+import com.tonyguerra.notfisgenerator.NotfisType;
+
 
 public final class NotfisParser {
 
@@ -32,6 +32,11 @@ public final class NotfisParser {
 
         this.props = loadProperties();
         this.layouts = loadLayouts(notfisType);
+    }
+
+    NotfisParser(Properties props, Map<String, JSONArray> layouts) {
+        this.props = props;
+        this.layouts = layouts;
     }
 
     private Properties loadProperties() throws IOException {
@@ -49,12 +54,12 @@ public final class NotfisParser {
         final String versionKey = notfisType.equals(NotfisType.VERSION31) ? "version-3.1" : "version-5.0";
         final String layoutPath = props.getProperty(versionKey).replace("classpath:", "");
 
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(layoutPath)) {
+        try (final var inputStream = getClass().getClassLoader().getResourceAsStream(layoutPath)) {
             if (inputStream == null) {
                 throw new IOException("Layout de configuração não encontrado: " + layoutPath);
             }
-            String content = new String(inputStream.readAllBytes());
-            JSONObject json = new JSONObject(content);
+            final String content = new String(inputStream.readAllBytes());
+            final var json = new JSONObject(content);
 
             final Map<String, JSONArray> layoutMap = new HashMap<>();
             json.keySet().forEach(key -> layoutMap.put(key, json.getJSONArray(key)));
@@ -64,7 +69,7 @@ public final class NotfisParser {
     }
 
     public List<NotfisLine> parseNotfisLine(String content) throws IOException {
-        final List<String> lines = Arrays.asList(content.split("\\R"));
+        final var lines = Arrays.asList(content.split("\\R"));
         return lines.stream().map(this::parseLine).collect(Collectors.toList());
     }
 
@@ -95,13 +100,13 @@ public final class NotfisParser {
 
             final String name = fieldConfig.getString("name");
             final short position = (short) fieldConfig.getInt("position");
-            final NotfisFieldType format = fieldConfig.getString("format").equals("A")
+            final var format = fieldConfig.getString("format").equals("A")
                     ? NotfisFieldType.ALPHANUMERIC
                     : NotfisFieldType.NUMERIC;
             final short size = (short) fieldConfig.getInt("size");
             final boolean mandatory = fieldConfig.optBoolean("mandatory");
 
-            final Object value = line.length() >= position + size - 1
+            final var value = line.length() >= position + size - 1
                     ? line.substring(position - 1, Math.min(position + size - 1, line.length())).trim()
                     : "";
 
