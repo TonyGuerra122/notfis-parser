@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 11 + Maven Central credentials
+      - name: Set up JDK 11 + Maven Central + GPG
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -27,6 +27,8 @@ jobs:
           server-id: central
           server-username: CENTRAL_USERNAME
           server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Import GPG key
         env:
@@ -40,10 +42,7 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          mvn -B -ntp clean deploy \
-            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} \
-            -Dgpg.passphrase="" 
+        run: mvn -B -ntp clean deploy
 
       - name: Build artifacts for GitHub Release
         run: mvn -B -ntp -DskipTests package
